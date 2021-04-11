@@ -16,6 +16,7 @@ export default function useD3Histogram() {
   useEffect(() => {
     // 1. Access Data
     const metricAccessor = (d) => d.x
+    const yAccessor = (d) => d.length
 
     // 2. Create Dimensions
     const width = 600
@@ -54,6 +55,20 @@ export default function useD3Histogram() {
       .scaleLinear()
       .domain(d3.extent(data, metricAccessor))
       .range([0, dimensions.boundedWidth])
+      .nice()
+
+    const binsGenerator = d3
+      .histogram()
+      .domain(xScale.domain())
+      .value(metricAccessor)
+      .thresholds(12)
+
+    const bins = binsGenerator(data)
+
+    const yScale = d3
+      .scaleLinear()
+      .domain([0, d3.max(bins, yAccessor)])
+      .range([dimensions.boundedHeight, 0])
       .nice()
 
     // 5. Draw Data
