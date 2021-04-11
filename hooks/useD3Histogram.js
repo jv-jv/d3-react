@@ -89,7 +89,33 @@ export default function useD3Histogram() {
       .attr("height", (d) => dimensions.boundedHeight - yScale(yAccessor(d)))
       .attr("fill", "cornflowerblue")
 
+    const barText = binGroups
+      .filter(yAccessor)
+      .append("text")
+      .attr("x", (d) => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2)
+      .attr("y", (d) => yScale(yAccessor(d)) - 5)
+      .text(yAccessor)
+      .style("text-anchor", "middle")
+      .attr("fill", "darkgrey")
+      .style("font-size", "12px")
+      .style("font-family", "sans-serif")
+
     // 6. Draw Peripherals
+
+    const xAxisGenerator = d3.axisBottom().scale(xScale)
+
+    const xAxis = bounds
+      .append("g")
+      .call(xAxisGenerator)
+      .style("transform", `translateY(${dimensions.boundedHeight}px)`)
+
+    const xAxisLabel = xAxis
+      .append("text")
+      .attr("x", dimensions.boundedWidth / 2)
+      .attr("y", dimensions.margin.bottom - 10)
+      .attr("fill", "black")
+      .style("font-size", "1.4em")
+      .text("x")
 
     // 7. Set Up Interactions
 
